@@ -1,0 +1,12 @@
+.logo {
+  margin: 0;
+  max-height: 33px;
+  height: 100%;
+}
+
+@media (max-width: 584px) {
+  .logo {
+    max-height: 24.4px;
+    padding-left: 8px;
+  }
+}

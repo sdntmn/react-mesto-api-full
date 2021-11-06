@@ -1,0 +1,7 @@
+.popup__container-foto {
+  display: flex;
+  position: relative;
+  max-width: max-content;
+  margin: 0 auto;
+  margin-top: calc((100vh - 75vh) / 2);
+}

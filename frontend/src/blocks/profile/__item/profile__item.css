@@ -1,0 +1,15 @@
+.profile__item {
+  display: grid;
+  grid-template-rows: 39px 18px;
+  gap: 16px;
+  margin: 0;
+  box-sizing: border-box;
+  max-width: 358px;
+}
+
+@media (max-width: 584px) {
+  .profile__item {
+    grid-template-rows: 26px 14px;
+    grid-template-columns: 238px;
+  }
+}
