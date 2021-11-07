@@ -33,7 +33,6 @@ export class Api {
 
   // Получить данные пользователя (GET) ======================================
   getDataUser(dataUser) {
-    console.log(dataUser);
     return fetch(this._url + "/users/me ", {
       headers: this._headers,
       body: JSON.stringify(dataUser),

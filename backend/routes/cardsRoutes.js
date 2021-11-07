@@ -11,10 +11,10 @@ const {
   dislikeCard,
 } = require("../controllers/сardsСontroller");
 
-router.get("/cards", getCards);
+router.get("/", getCards);
 
 router.post(
-  "/cards",
+  "/",
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
@@ -34,7 +34,7 @@ router.post(
 
 // Удаление карточки =======================================================
 router.delete(
-  "/cards/:cardId",
+  "/:cardId",
   celebrate({
     params: Joi.object().keys({
       cardId: Joi.string().length(24).hex(),
@@ -45,7 +45,7 @@ router.delete(
 
 // Поставить лайк карточке =================================================
 router.put(
-  "/cards/:cardId/likes",
+  "/likes/:cardId",
   celebrate({
     params: Joi.object().keys({
       cardId: Joi.string().length(24).hex(),
@@ -56,7 +56,7 @@ router.put(
 
 // Снять лайк карточки =====================================================
 router.delete(
-  "/cards/:cardId/likes",
+  "/likes/:cardId",
   celebrate({
     params: Joi.object().keys({
       cardId: Joi.string().length(24).hex(),

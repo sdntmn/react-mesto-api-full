@@ -12,23 +12,13 @@ const {
 } = require("../controllers/usersController");
 
 // возвращает информацию о всех пользователях
-router.get("/users", getUsers);
+router.get("/", getUsers);
 
-router.get("/users/me", getAuthUser);
-// возвращает информацию о пользователе по id
-router.get(
-  "/users/:id",
-  celebrate({
-    params: Joi.object().keys({
-      id: Joi.string().length(24).hex(),
-    }),
-  }),
-  getUser
-);
+router.get("/me", getAuthUser);
 
 // обновление данных пользователя
 router.patch(
-  "/users/me",
+  "/me",
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
@@ -39,7 +29,7 @@ router.patch(
 );
 // обновление аватар
 router.patch(
-  "/users/me/avatar",
+  "/me/avatar",
   celebrate({
     body: Joi.object().keys({
       avatar: Joi.string()
@@ -54,6 +44,17 @@ router.patch(
     }),
   }),
   updateUserAvatar
+);
+
+// возвращает информацию о пользователе по id
+router.get(
+  "/:id",
+  celebrate({
+    params: Joi.object().keys({
+      id: Joi.string().length(24).hex(),
+    }),
+  }),
+  getUser
 );
 
 module.exports = router;

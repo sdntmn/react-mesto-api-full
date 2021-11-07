@@ -60,17 +60,27 @@ function App() {
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
 
+  const history = useHistory();
+
+  // Состояние пользователя — авторизован или нет. Изначально - нет (False)
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  // Первоначальное состояние InfoToolTip ==================================
+  const [infoTool, setInfoTool] = useState(false);
+
   useEffect(() => {
-    api
-      .renderFirstData()
-      .then(([currentUser, cards]) => {
-        setCards(cards);
-        setCurrentUser(currentUser);
-      })
-      .catch((error) => {
-        console.log(`Ошибка получения данных ${error}`);
-      });
-  }, []);
+    if (loggedIn) {
+      api
+        .renderFirstData()
+        .then(([currentUser, cards]) => {
+          setCards(cards);
+          setCurrentUser(currentUser);
+        })
+        .catch((error) => {
+          console.log(`Ошибка получения данных ${error}`);
+        });
+    }
+  }, [loggedIn]);
 
   // Закрытие попапа (смена состояния на - False или Null)==================
   function closeAllPopups() {
@@ -109,8 +119,8 @@ function App() {
   // Лайк карточки =========================================================
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-
+    const isLiked = card.likes.some((i) => i === currentUser._id);
+    console.log(card);
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api
       .changeLikeCardStatus(card._id, isLiked)
@@ -152,36 +162,21 @@ function App() {
       });
   }
 
-  const history = useHistory();
-
-  // Состояние пользователя — авторизован или нет. Изначально - нет (False)
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [email, setEmail] = useState("");
-
-  // Первоначальное состояние InfoToolTip ==================================
-  const [infoTool, setInfoTool] = useState(false);
-
-  const authToken = async (jwt) => {
-    return auth
-      .getToken(jwt)
-      .then((res) => {
-        if (res) {
-          setLoggedIn(true);
-          setEmail(res.data.email);
-          history.push("/");
-        }
-      })
-      .catch((error) => {
-        console.log(`Ошибка данных ${error}`);
-      });
-  };
-
   useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      authToken(jwt); //функция авторизации
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      auth
+        .getToken(token) //функция авторизации
+        .then((res) => {
+          setLoggedIn(true);
+          setCurrentUser(res);
+          history.push("/");
+        })
+        .catch((error) => {
+          console.log(`Ошибка данных ${error}`);
+        });
     }
-  });
+  }, [history]);
 
   const [message, setMessage] = useState("");
   const [image, setImage] = useState(false);
@@ -222,8 +217,6 @@ function App() {
       .then((res) => {
         if (res.token) {
           setLoggedIn(true);
-          setEmail(email);
-
           localStorage.setItem("jwt", res.token);
           history.push("/");
         }
@@ -263,7 +256,7 @@ function App() {
       <div className="page">
         <Route exact path="/">
           <Header
-            email={email}
+            email={currentUser.email}
             btnLink="Выйти"
             pathLink="/sign-in"
             onEndSession={onSignOut}

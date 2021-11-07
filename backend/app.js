@@ -1,7 +1,8 @@
 const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
 const { errors, celebrate, Joi } = require("celebrate");
+require("dotenv").config();
 const validator = require("validator");
 const routerUser = require("./routes/usersRoutes");
 const routerCard = require("./routes/cardsRoutes");
@@ -11,13 +12,42 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 const NotFoundError = require("./errors/not-found-err-404");
 
 // Слушаем 3000 порт
-const PORT = 3000;
+const { PORT = 3000 } = process.env;
 
 const app = express();
-app.use(cookieParser());
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const allowedCors = [
+  "http://localhost:3000",
+  "http://place-tmn.nomoredomains.icu",
+  "https://place-tmn.nomoredomains.icu",
+  "mongodb://localhost:27017/mestodb",
+];
+
+app.use((req, res, next) => {
+  const { method } = req;
+  const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
+  const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
+  // проверяем, что источник запроса есть среди разрешённых
+  if (method === "OPTIONS") {
+    // разрешаем кросс-доменные запросы любых типов (по умолчанию)
+    res.header("Access-Control-Allow-Methods", DEFAULT_ALLOWED_METHODS);
+  }
+  if (allowedCors.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
+  next();
+});
+
+app.use("*", cors());
+
+// подключаемся к серверу mongo
+mongoose.connect("mongodb://localhost:27017/mestodb", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.use(requestLogger); // подключаем логгер запросов
 
@@ -52,11 +82,18 @@ app.post(
   createUser
 );
 
+// !!! Тестовый путь
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Сервер сейчас упадёт");
+  }, 0);
+});
+
 // роуты с авторизацией
-app.use("/", auth, routerUser);
-app.use("/", auth, routerCard);
-app.use((req, res, next) => {
-  next(new NotFoundError("Маршрут не найден"));
+app.use("/users", auth, routerUser);
+app.use("/cards", auth, routerCard);
+app.use("*", () => {
+  throw new NotFoundError("Маршрут не найден");
 });
 
 app.use(errorLogger); // подключаем логгер ошибок
@@ -73,11 +110,6 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// подключаемся к серверу mongo
-mongoose.connect("mongodb://localhost:27017/mestodb", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 // запуск сервера
 app.listen(PORT, () => {
   console.log(`Сервер работает и готов к получению данных на ${PORT} port...`);

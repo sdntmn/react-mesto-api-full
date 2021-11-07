@@ -101,13 +101,7 @@ module.exports.login = (req, res, next) => {
       if (!user) {
         return Promise.reject(new Error("Неправильные почта или пароль"));
       }
-      return res
-        .cookie("jwt", token, {
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-          sameSite: true,
-        })
-        .send({ message: "Авторизация прошла успешно" });
+      return res.send({ token });
     })
     .catch(() => {
       throw new UnauthorizedErr401({
@@ -119,8 +113,7 @@ module.exports.login = (req, res, next) => {
 
 // Обрабатываем запрос на получение данных авторизированного Usera =========
 module.exports.getAuthUser = (req, res, next) => {
-  const id = req.user._id;
-  return User.findById({ _id: id })
+  return User.findById({ _id: req.user._id })
     .then((user) => {
       return res.status(200).send(user);
     })
