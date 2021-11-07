@@ -1,0 +1,14 @@
+.profile__item-name {
+  display: grid;
+  grid-template-columns: 294px 24px;
+  grid-column-gap: 18px;
+  grid-row-gap: 16px;
+  align-items: center;
+}
+
+@media (max-width: 880px) {
+  .profile__item-name {
+    grid-template-columns: 189px 24px;
+    grid-column-gap: 14px;
+  }
+}

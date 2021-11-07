@@ -1,0 +1,10 @@
+.profile {
+  padding: 40px 0 0;
+  margin: 0;
+}
+
+@media (max-width: 584px) {
+  .profile {
+    padding: 42px 0 0;
+  }
+}

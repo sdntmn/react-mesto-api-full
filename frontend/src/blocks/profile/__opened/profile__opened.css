@@ -1,0 +1,32 @@
+.profile__opened {
+  display: flex;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+  background-image: url(../../../images/pencel.svg);
+  background-size: 10px 10px;
+  background-repeat: no-repeat;
+  background-position-x: center;
+  background-position-y: center;
+  border: 1px solid rgba(255, 255, 255, 1);
+  max-width: 24px;
+  width: 100%;
+  max-height: 24px;
+  height: 100%;
+  box-sizing: border-box;
+  transition: 0.5s;
+}
+
+@media (max-width: 880px) {
+  .profile__opened {
+    max-width: 18px;
+    max-height: 18px;
+    background-size: 7.5px 7.5px;
+  }
+}
+
+.profile__opened:hover {
+  opacity: 60%;
+}
