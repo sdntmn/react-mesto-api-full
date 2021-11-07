@@ -20,9 +20,8 @@ app.use(express.urlencoded({ extended: true }));
 
 const allowedCors = [
   "http://localhost:3000",
-  "http://place-tmn.nomoredomains.icu",
-  "https://place-tmn.nomoredomains.icu",
-  "mongodb://localhost:27017/mestodb",
+  "http://place-tmn.students.nomoredomains.work",
+  "https://place-tmn.students.nomoredomains.work",
 ];
 
 app.use((req, res, next) => {

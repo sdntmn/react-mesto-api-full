@@ -16,7 +16,8 @@
     "start": "cross-env PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "npm run build && scp -r ./build/* sdntmn@51.250.1.146:/home/react-mesto-api-full/frontend"
   },
   "eslintConfig": {
     "extends": [

@@ -89,7 +89,7 @@ export class Api {
 
 // + Запрос к Api ============================================================
 const api = new Api({
-  baseUrl: "http://localhost:3000",
+  baseUrl: "https://api.place-tmn.students.nomoredomains.work",
   headers: {
     Authorization: `Bearer ${localStorage.getItem("jwt")}`,
     "Content-Type": "application/json",
