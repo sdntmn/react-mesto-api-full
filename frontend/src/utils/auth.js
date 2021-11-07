@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:3000";
+export const BASE_URL = "https://api.place-tmn.students.nomoredomains.work";
 
 // Проверка ответа =========================================================
 export const checkRespons = (res) => {
