@@ -24,10 +24,10 @@
 }
 
 .form__button:hover {
-  opacity: 80%;
+  opacity: 0.8;
 }
 
 .form__button:disabled {
-  opacity: 20%;
+  opacity: 0.2;
   cursor: default;
 }
