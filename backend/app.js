@@ -11,11 +11,9 @@ const auth = require("./middlewares/auth");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const NotFoundError = require("./errors/not-found-err-404");
 
-const { PORT = 3001 } = process.env;
+const { PORT = 3000 } = process.env;
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 const allowedCors = [
   "http://place-tmn.students.nomoredomains.work",
@@ -25,21 +23,25 @@ const allowedCors = [
 
 app.use((req, res, next) => {
   const { method } = req;
-  const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
+  const requestHeaders = req.headers["access-control-request-headers"];
   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
   // проверяем, что источник запроса есть среди разрешённых
   if (method === "OPTIONS") {
     // разрешаем кросс-доменные запросы любых типов (по умолчанию)
-    res.header("Access-Control-Allow-Methods", DEFAULT_ALLOWED_METHODS);
+    res.header("Access-Control-Allow-Headers", requestHeaders);
+    return res.end();
   }
   if (allowedCors.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
   }
 
-  next();
+  return next();
 });
 
 app.use("*", cors());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // подключаемся к серверу mongo
 mongoose.connect("mongodb://localhost:27017/mestodb", {

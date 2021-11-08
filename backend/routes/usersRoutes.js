@@ -16,6 +16,17 @@ router.get("/", getUsers);
 
 router.get("/me", getAuthUser);
 
+// возвращает информацию о пользователе по id
+router.get(
+  "/:id",
+  celebrate({
+    params: Joi.object().keys({
+      id: Joi.string().length(24).hex(),
+    }),
+  }),
+  getUser
+);
+
 // обновление данных пользователя
 router.patch(
   "/me",
@@ -44,17 +55,6 @@ router.patch(
     }),
   }),
   updateUserAvatar
-);
-
-// возвращает информацию о пользователе по id
-router.get(
-  "/:id",
-  celebrate({
-    params: Joi.object().keys({
-      id: Joi.string().length(24).hex(),
-    }),
-  }),
-  getUser
 );
 
 module.exports = router;
