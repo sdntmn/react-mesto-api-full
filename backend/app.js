@@ -11,16 +11,16 @@ const auth = require("./middlewares/auth");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const NotFoundError = require("./errors/not-found-err-404");
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const allowedCors = [
-  "http://localhost:3000",
   "http://place-tmn.students.nomoredomains.work",
   "https://place-tmn.students.nomoredomains.work",
+  "http://localhost:3001",
 ];
 
 app.use((req, res, next) => {
