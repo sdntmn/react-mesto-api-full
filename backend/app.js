@@ -11,7 +11,6 @@ const auth = require("./middlewares/auth");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const NotFoundError = require("./errors/not-found-err-404");
 
-// Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 
 const app = express();
