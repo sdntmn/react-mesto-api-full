@@ -71,7 +71,7 @@ function App() {
       api
         .renderFirstData()
         .then(([currentUser, cards]) => {
-          setCards(cards);
+          setCards(cards.reverse());
           setCurrentUser(currentUser);
         })
         .catch((error) => {
