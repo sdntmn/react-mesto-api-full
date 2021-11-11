@@ -15,17 +15,15 @@ module.exports.getCards = (req, res, next) => {
 // +Обрабатываем запрос на удаление Card ===================================
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
+  console.log(req.params);
   Card.findById(cardId)
     .orFail(() => {
       throw new NotFoundError404("Карточка с указанным _id не найдена!!!.");
     })
     .then((card) => {
+      console.log(card);
       if (card.owner.toString() !== req.user._id) {
-        next(
-          new ForbiddenErr403({
-            message: "Нельзя удалять чужие карточки",
-          })
-        );
+        next(new ForbiddenErr403("Нельзя удалять чужие карточки"));
       } else {
         Card.deleteOne(card).then(() => {
           return res.send({ data: card });
@@ -69,9 +67,7 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((data) => {
       if (!data) {
-        throw new NotFoundError404({
-          message: "Передан несуществующий _id карточки.",
-        });
+        throw new NotFoundError404("Передан несуществующий _id карточки.");
       }
       return res.status(200).send(data);
     })

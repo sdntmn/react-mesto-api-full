@@ -6,7 +6,6 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import ImagePopup from "./ImagePopup";
 import PopupWithForm from "./PopupWithForm";
-
 import InfoTooltip from "./InfoTooltip";
 // Основные компоненты =====================================================
 import Header from "./Header";
@@ -40,6 +39,7 @@ function App() {
   const onAddPlace = () => {
     setPlacePopupOpen(true);
   };
+
   // Первоначальное состояние попапа Avatar (False - закрыт)================
   const [isEditAvatarPopupOpen, setAvatarPopupOpen] = useState(false);
 
@@ -59,12 +59,10 @@ function App() {
   //Синхронный вывод данных User и Card ====================================
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
-
   const history = useHistory();
 
   // Состояние пользователя — авторизован или нет. Изначально - нет (False)
   const [loggedIn, setLoggedIn] = useState(false);
-
   // Первоначальное состояние InfoToolTip ==================================
   const [infoTool, setInfoTool] = useState(false);
 
@@ -83,6 +81,7 @@ function App() {
   }, [loggedIn]);
 
   // Закрытие попапа (смена состояния на - False или Null)==================
+
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false);
     setPlacePopupOpen(false);
@@ -90,6 +89,7 @@ function App() {
     setSelectedCard(null);
     setInfoTool(false);
   }
+
   // Исправление(смена) данных пользователя=================================
   function handleUpdateUser(data) {
     api
@@ -134,13 +134,16 @@ function App() {
   }
 
   // Удаление карточки =====================================================
+
   function handleCardDelete(card) {
+    console.log(card._id);
     api
       .deleteCardUser(card._id)
       .then(() => {
         setCards((state) => state.filter((c) => c._id !== card._id));
-        /* Было setCards(cards.filter((c) => c._id !== card._id));
-        Рекомендация: изменять стейт лучше с помощью стейт-колбэка:
+
+        /* Было setCards(cards.filter((c) => c._id !== card._id)); 
+        Рекомендация: изменять стейт лучше с помощью стейт-колбэка: 
         Тут в стейт-функцию передается стейт-колбэк, в котором 1м аргументом идет текущее состояние переменной. Вот ее и нужно использовать (менять) при изменениях,  так как бывают ситуации, что где-то уже изменили эту переменную, но еще не обновились данные в ней, а Вы попытаетесь изменить старые данные, которые неактуальны больше */
       })
       .catch((error) => {
@@ -149,6 +152,7 @@ function App() {
   }
 
   // Добавление карточки ===================================================
+
   function handleAddPlaceSubmit(userCard) {
     api
       .setCardUser(userCard)
@@ -156,6 +160,7 @@ function App() {
         setCards([newArrCard, ...cards]);
         closeAllPopups();
       })
+
       .catch((error) => {
         console.log(`Ошибка данных карточки ${error}`);
       });
@@ -167,6 +172,7 @@ function App() {
       auth
         .getToken(token) //функция авторизации
         .then((res) => {
+          console.log(res);
           setLoggedIn(true);
           setCurrentUser(res);
           history.push("/");
@@ -178,32 +184,32 @@ function App() {
   }, [history]);
 
   const [message, setMessage] = useState("");
+
   const [image, setImage] = useState(false);
 
   // Регистрация нового пользователя =======================================
+
   function onRegister({ email, password }) {
     return auth
       .register({ email, password })
       .then((res) => {
         setMessage("Вы успешно зарегистрировались");
         setImage(true);
-
         setTimeout(function () {
           closeAllPopups();
         }, 2000);
-
         history.push("/sign-in");
-
         return res;
       })
+
       .catch((error) => {
         setMessage("Что-то пошло не так! Попробуйте ещё раз.");
         setImage(false);
-
         if (error.status === 400) {
           return console.log("не передано одно из полей");
         }
       })
+
       .finally(() => {
         setInfoTool(true);
       });
@@ -217,15 +223,18 @@ function App() {
         if (res.token) {
           setLoggedIn(true);
           localStorage.setItem("jwt", res.token);
+          setCurrentUser(res); // !!
           history.push("/");
         }
       })
+
       .catch((error) => {
         console.log(`Ошибка данных ${error}`);
       });
   }
 
   // Выход пользователя
+
   function onSignOut() {
     localStorage.removeItem("jwt");
     setLoggedIn(false);
@@ -233,11 +242,17 @@ function App() {
   }
 
   // Обработчик закрытия по Esc=============================================
-  /* Объявляем функцию внутри useEffect, чтобы она не теряла свою ссылку при обновлении компонента.
-  И не забываем удалять обработчик в clean up функции через return
-  А также пустой массив зависимостей, чтобы только 1 раз навесить и не трогать
-  его при обновлении компонента. Он будет удаляться только при размонтировании компонента.
+
+  /* Объявляем функцию внутри useEffect, чтобы она не теряла свою ссылку при обновлении компонента. 
+
+  И не забываем удалять обработчик в clean up функции через return 
+
+  А также пустой массив зависимостей, чтобы только 1 раз навесить и не трогать 
+
+  его при обновлении компонента. Он будет удаляться только при размонтировании компонента. 
+
 */
+
   useEffect(() => {
     const closeByEscape = (e) => {
       if (e.key === "Escape") {
@@ -261,6 +276,7 @@ function App() {
             onEndSession={onSignOut}
           />
         </Route>
+
         <Switch>
           <ProtectedRoute
             exact
@@ -280,37 +296,45 @@ function App() {
           <Route path="/sign-in">
             <Login onLogin={onLogin} />
           </Route>
+
           <Route path="/sign-up">
             <Register onRegister={onRegister} />
           </Route>
+
           <Route>
             {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
           </Route>
         </Switch>
+
         <Footer />
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
         ></EditProfilePopup>
+
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onUpdateCard={handleAddPlaceSubmit}
         ></AddPlacePopup>
+
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
         ></EditAvatarPopup>
+
         <PopupWithForm
           onClose={closeAllPopups}
           name="delete_card"
           title="Вы уверены?"
           btnName="Да"
         ></PopupWithForm>
+
         <InfoTooltip
           isOpen={infoTool}
           message={message}
