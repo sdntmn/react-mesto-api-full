@@ -95,7 +95,6 @@ module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      // console.log(user);
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === "production" ? JWT_SECRET : "dev-secret",
@@ -118,7 +117,6 @@ module.exports.login = (req, res, next) => {
 
 // Обрабатываем запрос на получение данных авторизированного Usera =========
 module.exports.getAuthUser = (req, res, next) => {
-  // console.log(req);
   return User.findById({ _id: req.user._id })
     .then((user) => {
       return res.status(200).send(user);

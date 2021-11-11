@@ -136,7 +136,6 @@ function App() {
   // Удаление карточки =====================================================
 
   function handleCardDelete(card) {
-    console.log(card._id);
     api
       .deleteCardUser(card._id)
       .then(() => {
@@ -172,7 +171,6 @@ function App() {
       auth
         .getToken(token) //функция авторизации
         .then((res) => {
-          console.log(res);
           setLoggedIn(true);
           setCurrentUser(res);
           history.push("/");
@@ -206,7 +204,7 @@ function App() {
         setMessage("Что-то пошло не так! Попробуйте ещё раз.");
         setImage(false);
         if (error.status === 400) {
-          return console.log("не передано одно из полей");
+          return "не передано одно из полей";
         }
       })
 

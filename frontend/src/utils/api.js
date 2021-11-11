@@ -33,7 +33,6 @@ export class Api {
 
   // Получить данные пользователя (GET) ======================================
   getDataUser(dataUser) {
-    console.log(dataUser);
     return fetch(this._url + "/users/me ", {
       headers: this._headers,
       body: JSON.stringify(dataUser),
@@ -78,7 +77,6 @@ export class Api {
 
   // Удалить карточку пользователя (DELETE) ====================================
   deleteCardUser(cardID) {
-    console.log(cardID);
     return fetch(this._url + `/cards/${cardID}`, {
       method: "DELETE",
       headers: this._headers,
