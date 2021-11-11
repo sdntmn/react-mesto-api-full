@@ -38,6 +38,13 @@ mongoose.connect("mongodb://localhost:27017/mestodb", {
 
 app.use(requestLogger); // подключаем логгер запросов
 
+// !!! Тестовый путь
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Сервер сейчас упадёт");
+  }, 0);
+});
+
 // роуты без авторизации
 app.post(
   "/signin",
@@ -68,13 +75,6 @@ app.post(
   }),
   createUser
 );
-
-// !!! Тестовый путь
-app.get("/crash-test", () => {
-  setTimeout(() => {
-    throw new Error("Сервер сейчас упадёт");
-  }, 0);
-});
 
 // роуты с авторизацией
 app.use("/users", auth, routerUser);
